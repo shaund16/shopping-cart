@@ -27,6 +27,8 @@ const getProducts = async (): Promise<CartItemType[]> =>
   await (await fetch('https://fakestoreapi.com/products')).json();
 
 const App = () => {
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([] as CartItemType[]);
   const { data, isLoading, error } = useQuery<CartItemType[]>(
     'products',
     getProducts
@@ -39,21 +41,27 @@ const App = () => {
 
   const handleRemoveFromCart = () => null;
 
-  if(isLoading) return <LinearProgress />
-  if (error) return <div>Something went Wrong.....</div>
-
+  if (isLoading) return <LinearProgress />;
+  if (error) return <div>Something went Wrong.....</div>;
 
   return (
     <Wrapper>
+      <Drawer
+        anchor='right'
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+      >
+        Cart goes here
+      </Drawer>
       <Grid container spacing={3}>
-        {data?.map(item  => (
-         <Grid item key={item.id} xs={12} sm={4}>
-           <Item item={item} handleAddToCart={handleAddToCart} /> 
-        </Grid>
+        {data?.map((item) => (
+          <Grid item key={item.id} xs={12} sm={4}>
+            <Item item={item} handleAddToCart={handleAddToCart} />
+          </Grid>
         ))}
       </Grid>
     </Wrapper>
-    );
+  );
 };
 
 export default App;
